@@ -1,0 +1,922 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #2C4A73 0%, #1E3A5F 100%);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 800px;
+    height: 600px;
+    background: #FFFFFF;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    overflow: hidden;
+    position: relative;
+}
+
+.pantalla {
+    display: none;
+    padding: 20px;
+    height: 100%;
+    flex-direction: column;
+}
+
+.pantalla.activa {
+    display: flex;
+}
+
+/* HEADER */
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #2C4A73;
+    margin-bottom: 10px;
+}
+
+.estado {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.saludo {
+    font-size: 22px;
+    color: #2C4A73;
+    font-weight: bold;
+}
+
+/* BOTONES PRINCIPALES */
+.grid-botones {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.fila-botones {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+    flex: 1;
+}
+
+.boton-icono {
+    flex: 1;
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 15px;
+    padding: 15px 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 100px;
+}
+
+.boton-icono:hover {
+    background: #2C4A73;
+    border-color: #2C4A73;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(44, 74, 115, 0.3);
+}
+
+.boton-icono:hover .icono,
+.boton-icono:hover .texto-boton {
+    color: #FFFFFF;
+}
+
+.icono {
+    font-size: 32px;
+    color: #2C4A73;
+}
+
+.texto-boton {
+    font-size: 16px;
+    font-weight: bold;
+    color: #2C4A73;
+    text-align: center;
+}
+
+/* CONTROL DE VOZ */
+.control-voz {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.boton-voz {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.boton-voz:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(76, 175, 80, 0.4);
+}
+
+.boton-voz.grabando {
+    background: linear-gradient(135deg, #f44336, #da190b);
+    animation: pulse 1.5s infinite;
+}
+
+.estado-voz {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+    min-height: 20px;
+}
+
+.conversacion {
+    background: #F8FAFC;
+    border-radius: 10px;
+    padding: 15px;
+    max-height: 120px;
+    overflow-y: auto;
+    text-align: left;
+    border: 1px solid #E2E8F0;
+}
+
+.mensaje {
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    animation: fadeIn 0.3s ease;
+}
+
+.mensaje.usuario {
+    background: #2C4A73;
+    color: #FFFFFF;
+    margin-left: 20px;
+}
+
+.mensaje.asistente {
+    background: #E8F5E8;
+    color: #2C4A73;
+    margin-right: 20px;
+    border: 1px solid #4CAF50;
+}
+
+/* OVERLAYS */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay-content {
+    background: #FFFFFF;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    animation: slideIn 0.3s ease;
+    border: 2px solid #2C4A73;
+}
+
+.persona-camara, .videollamada-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.foto-persona, .foto-videollamada {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #2C4A73;
+}
+
+.botones-overlay, .botones-videollamada {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-overlay, .btn-llamada {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-overlay.aceptar, .btn-llamada.colgar {
+    background: #4CAF50;
+    color: #FFFFFF;
+}
+
+.btn-overlay.rechazar, .btn-llamada.silenciar {
+    background: #2C4A73;
+    color: #FFFFFF;
+}
+
+.tiempo-llamada {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2C4A73;
+    margin: 10px 0;
+}
+
+/* MÓDULOS */
+.header-modulo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.btn-volver {
+    background: #2C4A73;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.header-modulo h2 {
+    color: #2C4A73;
+    font-size: 22px;
+}
+
+.contenido-modulo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+/* LUCES */
+.estado-luces {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.luz-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #F8FAFC;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #E2E8F0;
+}
+
+.btn-toggle {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+}
+
+.btn-toggle.encendido {
+    background: #4CAF50;
+    color: #FFFFFF;
+}
+
+.btn-toggle.apagado {
+    background: #2C4A73;
+    color: #FFFFFF;
+}
+
+/* CLIMA */
+.info-clima {
+    background: #F0F9FF;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #E2E8F0;
+}
+
+.clima-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 16px;
+    color: #2C4A73;
+}
+
+.controles-clima {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-clima {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    background: #2C4A73;
+    color: #FFFFFF;
+}
+
+.btn-clima:hover {
+    transform: translateY(-2px);
+    background: #1E3A5F;
+}
+
+/* LLAMADAS */
+.lista-contactos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contacto {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #F8FAFC;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #E2E8F0;
+}
+
+.info-contacto {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.emoji-contacto {
+    font-size: 24px;
+}
+
+.nombre-contacto {
+    font-size: 16px;
+    font-weight: bold;
+    color: #2C4A73;
+}
+
+.estado-contacto {
+    font-size: 12px;
+    color: #4CAF50;
+}
+
+.botones-contacto {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-video, .btn-voz {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-video {
+    background: #2C4A73;
+    color: #FFFFFF;
+}
+
+.btn-voz {
+    background: #4CAF50;
+    color: #FFFFFF;
+}
+
+.btn-video:hover, .btn-voz:hover {
+    transform: scale(1.1);
+}
+
+.emergencia {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn-emergencia {
+    background: linear-gradient(135deg, #f44336, #da190b);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 15px;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.btn-emergencia:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 20px rgba(244, 67, 54, 0.4);
+}
+
+.btn-emergencia small {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* MÚSICA */
+.reproductor-musica {
+    background: #F8FAFC;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #E2E8F0;
+}
+
+.info-musica {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.portada {
+    font-size: 48px;
+    color: #2C4A73;
+}
+
+.detalles-musica {
+    flex: 1;
+}
+
+.titulo-musica {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2C4A73;
+}
+
+.artista-musica {
+    font-size: 14px;
+    color: #666;
+}
+
+.controles-musica {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.btn-musica {
+    padding: 12px;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    background: #2C4A73;
+    color: #FFFFFF;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-musica:hover {
+    transform: scale(1.1);
+    background: #1E3A5F;
+}
+
+.btn-musica.reproduciendo {
+    background: #4CAF50;
+    animation: pulse 2s infinite;
+}
+
+.lista-canciones {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cancion-item {
+    background: #E8F5E8;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-left: 4px solid #4CAF50;
+}
+
+.cancion-item:hover {
+    background: #D4EDDA;
+    transform: translateX(5px);
+}
+
+.cancion-item.activa {
+    background: #4CAF50;
+    color: #FFFFFF;
+}
+
+/* ENTRADA */
+.vista-camara {
+    background: #2C4A73;
+    color: #FFFFFF;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.camara-feed {
+    margin-bottom: 15px;
+}
+
+.imagen-camara {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #FFFFFF;
+}
+
+.estado-puerta {
+    font-size: 16px;
+    color: #4CAF50;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.controles-entrada {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-entrada {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    background: #4CAF50;
+    color: #FFFFFF;
+    flex: 1;
+    transition: all 0.3s ease;
+}
+
+.btn-entrada:hover {
+    background: #45a049;
+}
+
+.eventos-recientes {
+    background: #F8FAFC;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #E2E8F0;
+}
+
+.evento {
+    font-size: 14px;
+    color: #666;
+    padding: 5px 0;
+}
+
+/* NOTICIAS */
+.noticias-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.noticia-item {
+    background: #F8FAFC;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 4px solid #2C4A73;
+    border: 1px solid #E2E8F0;
+}
+
+.categoria-noticia {
+    font-size: 12px;
+    font-weight: bold;
+    color: #2C4A73;
+    margin-bottom: 5px;
+}
+
+.titulo-noticia {
+    font-size: 16px;
+    font-weight: bold;
+    color: #2C4A73;
+    margin-bottom: 5px;
+}
+
+.resumen-noticia {
+    font-size: 14px;
+    color: #666;
+}
+
+.controles-noticias {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-noticias {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    background: #4CAF50;
+    color: #FFFFFF;
+    transition: all 0.3s ease;
+}
+
+.btn-noticias:hover {
+    background: #45a049;
+}
+
+/* RECORDATORIOS */
+.lista-recordatorios {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.recordatorio-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #F8FAFC;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #E2E8F0;
+}
+
+.recordatorio-item.completado {
+    opacity: 0.6;
+    background: #E8F5E8;
+}
+
+.recordatorio-item.activo {
+    background: #F0F9FF;
+    border-left: 4px solid #4CAF50;
+}
+
+.icono-recordatorio {
+    font-size: 20px;
+    color: #2C4A73;
+}
+
+.info-recordatorio {
+    flex: 1;
+}
+
+.hora-recordatorio {
+    font-size: 14px;
+    font-weight: bold;
+    color: #2C4A73;
+}
+
+.texto-recordatorio {
+    font-size: 16px;
+    color: #2C4A73;
+}
+
+.btn-completar {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    background: #4CAF50;
+    color: #FFFFFF;
+}
+
+.agregar-recordatorio {
+    text-align: center;
+}
+
+.btn-agregar {
+    background: #2C4A73;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-agregar:hover {
+    background: #1E3A5F;
+}
+
+/* RECUERDOS */
+.galeria-recuerdos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.recuerdo-item {
+    background: #FEF7FF;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #E2E8F0;
+}
+
+.foto-recuerdo {
+    font-size: 40px;
+    margin-bottom: 10px;
+    color: #2C4A73;
+}
+
+.desc-recuerdo {
+    font-size: 14px;
+    color: #2C4A73;
+    margin-bottom: 10px;
+}
+
+.btn-ver {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    background: #2C4A73;
+    color: #FFFFFF;
+}
+
+.mensajes-familiares {
+    background: #F0F9FF;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #E2E8F0;
+}
+
+.mensaje-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.emoji-mensaje {
+    font-size: 20px;
+}
+
+.texto-mensaje {
+    font-size: 14px;
+    color: #2C4A73;
+}
+
+.controles-recuerdos {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-recuerdos {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    background: #2C4A73;
+    color: #FFFFFF;
+    transition: all 0.3s ease;
+}
+
+.btn-recuerdos:hover {
+    background: #1E3A5F;
+}
+
+/* CONTROLES GENERALES */
+.control-deslizador {
+    background: #F8FAFC;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #E2E8F0;
+}
+
+.control-deslizador label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #2C4A73;
+    font-weight: bold;
+}
+
+.deslizador {
+    width: 100%;
+    height: 20px;
+    border-radius: 10px;
+    background: #E2E8F0;
+    outline: none;
+}
+
+.botones-accion {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-encender, .btn-apagar {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.3s ease;
+}
+
+.btn-encender {
+    background: #4CAF50;
+    color: #FFFFFF;
+}
+
+.btn-apagar {
+    background: #2C4A73;
+    color: #FFFFFF;
+}
+
+.btn-encender:hover, .btn-apagar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* ANIMACIONES */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        height: 90vh;
+    }
+    
+    .boton-icono {
+        min-height: 80px;
+        padding: 10px 5px;
+    }
+    
+    .icono {
+        font-size: 24px;
+    }
+    
+    .texto-boton {
+        font-size: 14px;
+    }
+}

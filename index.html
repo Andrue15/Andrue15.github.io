@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acompaña+ - Tu Asistente Personal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Elementos de audio -->
+    <audio id="audio-player" loop></audio>
+    <audio id="audio-voz"></audio>
+    
+    <!-- Overlay de cámara -->
+    <div id="overlay-camara" class="overlay">
+        <div class="overlay-content">
+            <div class="persona-camara">
+                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=face" alt="Ana" class="foto-persona">
+                <div class="info-persona">
+                    <h3>👩 Ana está en la entrada</h3>
+                    <p>Tu nieta ha llegado a visitarte</p>
+                    <div class="botones-overlay">
+                        <button class="btn-overlay aceptar" onclick="abrirPuerta()">🚪 Abrir Puerta</button>
+                        <button class="btn-overlay rechazar" onclick="cerrarOverlay()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay de videollamada -->
+    <div id="overlay-videollamada" class="overlay">
+        <div class="overlay-content">
+            <div class="videollamada-container">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face" alt="Carlos" class="foto-videollamada">
+                <div class="info-videollamada">
+                    <h3>📞 Videollamada con Carlos</h3>
+                    <p>En llamada con tu hijo</p>
+                    <div class="tiempo-llamada" id="tiempo-llamada">00:00</div>
+                    <div class="botones-videollamada">
+                        <button class="btn-llamada colgar" onclick="colgarLlamada()">📞 Colgar</button>
+                        <button class="btn-llamada silenciar" onclick="silenciarLlamada()">🔇 Silenciar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- PANTALLA PRINCIPAL -->
+        <div id="pantalla-principal" class="pantalla activa">
+            <header class="header">
+                <div class="logo">Acompaña+</div>
+                <div class="estado">🌤️ <span id="temperatura-actual">22°C</span> • 💧 <span id="humedad-actual">45%</span> • 🕘 <span id="hora-actual">3:30 PM</span></div>
+                <div class="saludo" id="saludo-usuario">¡Hola, María! ¿En qué te ayudo hoy?</div>
+            </header>
+            
+            <div class="grid-botones">
+                <div class="fila-botones">
+                    <button class="boton-icono" onclick="abrirModulo('luces')">
+                        <div class="icono">💡</div>
+                        <span class="texto-boton">Luces</span>
+                    </button>
+                    <button class="boton-icono" onclick="abrirModulo('clima')">
+                        <div class="icono">🌡️</div>
+                        <span class="texto-boton">Clima</span>
+                    </button>
+                    <button class="boton-icono" onclick="abrirModulo('llamar')">
+                        <div class="icono">📞</div>
+                        <span class="texto-boton">Llamar</span>
+                    </button>
+                    <button class="boton-icono" onclick="abrirModulo('musica')">
+                        <div class="icono">🎵</div>
+                        <span class="texto-boton">Música</span>
+                    </button>
+                </div>
+                <div class="fila-botones">
+                    <button class="boton-icono" onclick="abrirModulo('entrada')">
+                        <div class="icono">🚪</div>
+                        <span class="texto-boton">Entrada</span>
+                    </button>
+                    <button class="boton-icono" onclick="abrirModulo('noticias')">
+                        <div class="icono">📰</div>
+                        <span class="texto-boton">Noticias</span>
+                    </button>
+                    <button class="boton-icono" onclick="abrirModulo('recordatorios')">
+                        <div class="icono">💊</div>
+                        <span class="texto-boton">Recordatorios</span>
+                    </button>
+                    <button class="boton-icono" onclick="abrirModulo('recuerdos')">
+                        <div class="icono">❤️</div>
+                        <span class="texto-boton">Recuerdos</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="control-voz">
+                <button class="boton-voz" onclick="iniciarConversacion()">
+                    <span class="icono-voz">🎤</span>
+                    HABLAR CON ACOMPAÑA+
+                </button>
+                <div id="estado-voz" class="estado-voz">Presiona el botón y habla</div>
+                <div id="conversacion" class="conversacion"></div>
+            </div>
+        </div>
+
+        <!-- MÓDULO LUCES -->
+        <div id="modulo-luces" class="pantalla">
+            <header class="header-modulo">
+                <button class="btn-volver" onclick="volverPrincipal()">← Volver</button>
+                <h2>💡 Control de Luces</h2>
+            </header>
+            <div class="contenido-modulo">
+                <div class="control-deslizador">
+                    <label>Brillo General: <span id="valor-brillo">75%</span></label>
+                    <input type="range" min="0" max="100" value="75" class="deslizador" onchange="controlarBrillo(this.value)">
+                </div>
+                <div class="estado-luces">
+                    <div class="luz-item">
+                        <span>💡 Luz Principal</span>
+                        <button class="btn-toggle encendido" onclick="toggleLuz('principal')" id="luz-principal">ENCENDIDA</button>
+                    </div>
+                    <div class="luz-item">
+                        <span>🛏️ Luz Noche</span>
+                        <button class="btn-toggle apagado" onclick="toggleLuz('noche')" id="luz-noche">APAGADA</button>
+                    </div>
+                    <div class="luz-item">
+                        <span>🚪 Luz Entrada</span>
+                        <button class="btn-toggle encendido" onclick="toggleLuz('entrada')" id="luz-entrada">ENCENDIDA</button>
+                    </div>
+                    <div class="luz-item">
+                        <span>🍳 Luz Cocina</span>
+                        <button class="btn-toggle apagado" onclick="toggleLuz('cocina')" id="luz-cocina">APAGADA</button>
+                    </div>
+                </div>
+                <div class="botones-accion">
+                    <button class="btn-encender" onclick="encenderTodasLuces()">APAGAR TODAS</button>
+                    <button class="btn-apagar" onclick="apagarTodasLuces()">ENCENDER TODAS</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO CLIMA -->
+        <div id="modulo-clima" class="pantalla">
+            <header class="header-modulo">
+                <button class="btn-volver" onclick="volverPrincipal()">← Volver</button>
+                <h2>🌡️ Control de Clima</h2>
+            </header>
+            <div class="contenido-modulo">
+                <div class="info-clima">
+                    <div class="clima-item">
+                        <span>🌡️ Temperatura Actual:</span>
+                        <span id="temp-actual">22°C</span>
+                    </div>
+                    <div class="clima-item">
+                        <span>💧 Humedad:</span>
+                        <span id="humedad-actual-modulo">45%</span>
+                    </div>
+                    <div class="clima-item">
+                        <span>🎯 Temperatura Deseada:</span>
+                        <span id="temp-deseada">22°C</span>
+                    </div>
+                </div>
+                <div class="control-deslizador">
+                    <label>Ajustar Temperatura: <span id="valor-temperatura">22°C</span></label>
+                    <input type="range" min="18" max="28" value="22" class="deslizador" onchange="controlarTemperatura(this.value)">
+                </div>
+                <div class="controles-clima">
+                    <button class="btn-clima" onclick="activarModo('calefaccion')">🔥 Calefacción</button>
+                    <button class="btn-clima" onclick="activarModo('ventilador')">🌬️ Ventilador</button>
+                    <button class="btn-clima" onclick="activarModo('apagado')">⚡ Apagado</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO LLAMAR -->
+        <div id="modulo-llamar" class="pantalla">
+            <header class="header-modulo">
+                <button class="btn-volver" onclick="volverPrincipal()">← Volver</button>
+                <h2>📞 Llamar a Contactos</h2>
+            </header>
+            <div class="contenido-modulo">
+                <div class="lista-contactos">
+                    <div class="contacto">
+                        <div class="info-contacto">
+                            <span class="emoji-contacto">👨</span>
+                            <div>
+                                <span class="nombre-contacto">Carlos (hijo)</span>
+                                <div class="estado-contacto">🟢 En línea</div>
+                            </div>
+                        </div>
+                        <div class="botones-contacto">
+                            <button class="btn-video" onclick="iniciarVideollamada('Carlos')">📹 Video</button>
+                            <button class="btn-voz" onclick="realizarLlamada('Carlos', 'voz')">📞 Voz</button>
+                        </div>
+                    </div>
+                    <div class="contacto">
+                        <div class="info-contacto">
+                            <span class="emoji-contacto">👩</span>
+                            <div>
+                                <span class="nombre-contacto">Ana (nieta)</span>
+                                <div class="estado-contacto">🟢 En línea</div>
+                            </div>
+                        </div>
+                        <div class="botones-contacto">
+                            <button class="btn-video" onclick="iniciarVideollamada('Ana')">📹 Video</button>
+                            <button class="btn-voz" onclick="realizarLlamada('Ana', 'voz')">📞 Voz</button>
+                        </div>
+                    </div>
+                    <div class="contacto">
+                        <div class="info-contacto">
+                            <span class="emoji-contacto">🏥</span>
+                            <div>
+                                <span class="nombre-contacto">Dr. González</span>
+                                <div class="estado-contacto">🟡 Disponible</div>
+                            </div>
+                        </div>
+                        <div class="botones-contacto">
+                            <button class="btn-voz" onclick="realizarLlamada('Dr. González', 'voz')">📞 Llamar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="emergencia">
+                    <button class="btn-emergencia" onclick="activarEmergencia()">
+                        🆘 BOTÓN EMERGENCIA<br>
+                        <small>Mantener 3 segundos</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO MÚSICA -->
+        <div id="modulo-musica" class="pantalla">
+            <header class="header-modulo">
+                <button class="btn-volver" onclick="volverPrincipal()">← Volver</button>
+                <h2>🎵 Música Relajante</h2>
+            </header>
+            <div class="contenido-modulo">
+                <div class="reproductor-musica">
+                    <div class="info-musica">
+                        <div class="portada">🎵</div>
+                        <div class="detalles-musica">
+                            <div class="titulo-musica" id="titulo-actual">Selecciona una canción</div>
+                            <div class="artista-musica" id="artista-actual">Presiona reproducir</div>
+                        </div>
+                    </div>
+                    <div class="controles-musica">
+                        <button class="btn-musica" onclick="cancionAnterior()">⏮</button>
+                        <button class="btn-musica" onclick="toggleReproduccion()" id="btn-play">▶️ Reproducir</button>
+                        <button class="btn-musica" onclick="cancionSiguiente()">⏭</button>
+                    </div>
+                    <div class="volumen">
+                        <label>Volumen: <span id="valor-volumen">50%</span></label>
+                        <input type="range" min="0" max="100" value="50" class="deslizador" onchange="cambiarVolumen(this.value)">
+                    </div>
+                </div>
+                <div class="lista-canciones">
+                    <div class="cancion-item activa" onclick="seleccionarCancion(0)">
+                        <span>🎻 Música Clásica Relajante</span>
+                    </div>
+                    <div class="cancion-item" onclick="seleccionarCancion(1)">
+                        <span>🌊 Sonidos de Naturaleza</span>
+                    </div>
+                    <div class="cancion-item" onclick="seleccionarCancion(2)">
+                        <span>🎶 Jazz Suave</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO ENTRADA -->
+        <div id="modulo-entrada" class="pantalla">
+            <header class="header-modulo">
+                <button class="btn-volver" onclick="volverPrincipal()">← Volver</button>
+                <h2>🚪 Entrada y Seguridad</h2>
+            </header>
+            <div class="contenido-modulo">
+                <div class="vista-camara">
+                    <div class="camara-container">
+                        <div class="camara-feed" id="feed-camara">
+                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop" alt="Entrada" class="imagen-camara">
+                            <div class="estado-puerta">🔒 Puerta Principal: CERRADA</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="controles-entrada">
+                    <button class="btn-entrada" onclick="simularVisita()">👨‍👩‍👧 Simular Visita</button>
+                    <button class="btn-entrada" onclick="abrirPuerta()">🚪 Abrir Puerta</button>
+                    <button class="btn-entrada" onclick="activarModoNoche()">🌙 Modo Noche</button>
+                </div>
+                <div class="eventos-recientes">
+                    <h3>Eventos Recientes:</h3>
+                    <div class="evento">• Hoy 10:25 AM - Repartidor detectado</div>
+                    <div class="evento">• Ayer 3:15 PM - Visita de Ana</div>
+                    <div class="evento">• Ayer 9:30 AM - Dr. González</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO NOTICIAS -->
+        <div id="modulo-noticias" class="pantalla">
+            <header class="header-modulo">
+                <button class="btn-volver" onclick="volverPrincipal()">← Volver</button>
+                <h2>📰 Noticias del Día</h2>
+            </header>
+            <div class="contenido-modulo">
+                <div class="noticias-container">
+                    <div class="noticia-item">
+                        <div class="categoria-noticia">🏥 Salud</div>
+                        <div class="titulo-noticia">Consejos para presión arterial saludable</div>
+                        <div class="resumen-noticia">Ejercicio moderado y dieta balanceada son clave para la salud cardiovascular...</div>
+                    </div>
+                    <div class="noticia-item">
+                        <div class="categoria-noticia">🎉 Comunidad</div>
+                        <div class="titulo-noticia">Actividades del centro de adultos mayores</div>
+                        <div class="resumen-noticia">Clases de baile los martes y jueves a las 10 AM en el centro comunitario...</div>
+                    </div>
+                    <div class="noticia-item">
+                        <div class="categoria-noticia">🌤️ Clima</div>
+                        <div class="titulo-noticia">Pronóstico: Días soleados para el fin de semana</div>
+                        <div class="resumen-noticia">Temperaturas entre 20-25°C, ideal para paseos al aire libre...</div>
+                    </div>
+                </div>
+                <div class="controles-noticias">
+                    <button class="btn-noticias" onclick="leerNoticiaEnVoz(0)">🔊 Leer Noticia</button>
+                    <button class="btn-noticias" onclick="actualizarNoticias()">🔄 Actualizar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO RECORDATORIOS -->
+        <div id="modulo-recordatorios" class="pantalla">
+            <header class="header-modulo">
+                <button class="btn-volver" onclick="volverPrincipal()">← Volver</button>
+                <h2>💊 Recordatorios Diarios</h2>
+            </header>
+            <div class="contenido-modulo">
+                <div class="lista-recordatorios">
+                    <div class="recordatorio-item completado">
+                        <div class="icono-recordatorio">✅</div>
+                        <div class="info-recordatorio">
+                            <div class="hora-recordatorio">8:00 AM</div>
+                            <div class="texto-recordatorio">Desayuno y medicación matutina</div>
+                        </div>
+                    </div>
+                    <div class="recordatorio-item activo">
+                        <div class="icono-recordatorio">⏰</div>
+                        <div class="info-recordatorio">
+                            <div class="hora-recordatorio">9:00 AM</div>
+                            <div class="texto-recordatorio">Pastilla azul - presión arterial</div>
+                        </div>
+                        <button class="btn-completar" onclick="completarRecordatorio(1)">✅ Completar</button>
+                    </div>
+                    <div class="recordatorio-item">
+                        <div class="icono-recordatorio">💊</div>
+                        <div class="info-recordatorio">
+                            <div class="hora-recordatorio">11:00 AM</div>
+                            <div class="texto-recordatorio">Ejercicios suaves - 15 minutos</div>
+                        </div>
+                    </div>
+                    <div class="recordatorio-item">
+                        <div class="icono-recordatorio">🏥</div>
+                        <div class="info-recordatorio">
+                            <div class="hora-recordatorio">3:00 PM</div>
+                            <div class="texto-recordatorio">Cita con Dr. González</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="agregar-recordatorio">
+                    <button class="btn-agregar" onclick="agregarNuevoRecordatorio()">➕ Agregar Recordatorio</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO RECUERDOS -->
+        <div id="modulo-recuerdos" class="pantalla">
+            <header class="header-modulo">
+                <button class="btn-volver" onclick="volverPrincipal()">← Volver</button>
+                <h2>❤️ Recuerdos Familiares</h2>
+            </header>
+            <div class="contenido-modulo">
+                <div class="galeria-recuerdos">
+                    <div class="recuerdo-item">
+                        <div class="foto-recuerdo">👨‍👩‍👧‍👦</div>
+                        <div class="desc-recuerdo">Familia en Navidad 2020</div>
+                        <button class="btn-ver" onclick="verRecuerdo(1)">Ver</button>
+                    </div>
+                    <div class="recuerdo-item">
+                        <div class="foto-recuerdo">🎂</div>
+                        <div class="desc-recuerdo">Mi cumpleaños 80</div>
+                        <button class="btn-ver" onclick="verRecuerdo(2)">Ver</button>
+                    </div>
+                    <div class="recuerdo-item">
+                        <div class="foto-recuerdo">🏖️</div>
+                        <div class="desc-recuerdo">Vacaciones en la playa</div>
+                        <button class="btn-ver" onclick="verRecuerdo(3)">Ver</button>
+                    </div>
+                </div>
+                <div class="mensajes-familiares">
+                    <h3>Mensajes de Familia:</h3>
+                    <div class="mensaje-item">
+                        <div class="emoji-mensaje">👩</div>
+                        <div class="texto-mensaje">"Abuela, te extraño! Nos vemos el sábado ❤️" - Ana</div>
+                    </div>
+                    <div class="mensaje-item">
+                        <div class="emoji-mensaje">👨</div>
+                        <div class="texto-mensaje">"Mamá, ya pagué las cuentas. No te preocupes 😊" - Carlos</div>
+                    </div>
+                </div>
+                <div class="controles-recuerdos">
+                    <button class="btn-recuerdos" onclick="reproducirMensajesVoz()">🔊 Escuchar Mensajes</button>
+                    <button class="btn-recuerdos" onclick="modoPresentacion()">🖼️ Modo Presentación</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
